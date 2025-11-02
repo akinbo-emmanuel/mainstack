@@ -1,5 +1,5 @@
 import { BiMenu } from "react-icons/bi";
-import Logo from "../assets/logo.webp";
+import Logo from "../../assets/logo.webp";
 import { GoHome } from "react-icons/go";
 import {
   MdOutlineGroup,
