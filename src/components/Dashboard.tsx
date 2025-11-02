@@ -1,10 +1,12 @@
-// src/features/Dashboard.tsx
-import { useUser, useWallet, useTransactions } from "../features/queries";
+import {
+  MdKeyboardArrowDown,
+  MdOutlineCallMade,
+  MdOutlineCallReceived,
+} from "react-icons/md";
+import { useWallet, useTransactions } from "../features/queries";
+import Wallet from "./revenueDashboard/sections/Wallet";
+import { RxDownload } from "react-icons/rx";
 
-const N = new Intl.NumberFormat("en-NG", {
-  style: "currency",
-  currency: "NGN",
-});
 const D = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
   month: "short",
@@ -12,7 +14,7 @@ const D = new Intl.DateTimeFormat("en-GB", {
 });
 
 export default function Dashboard() {
-  const { data: user, isLoading: uL, isError: uE, error: uErr } = useUser();
+  // const { data: user, isLoading: uL, isError: uE, error: uErr } = useUser();
   const { data: wallet, isLoading: wL, isError: wE, error: wErr } = useWallet();
   const {
     data: txs,
@@ -21,108 +23,103 @@ export default function Dashboard() {
     error: tErr,
   } = useTransactions();
 
-  if (uL || wL || tL) return <p>Loading…</p>;
-  if (uE) return <p className="text-red-600">User error: {uErr.message}</p>;
+  if (wL || tL) return <p>Loading…</p>;
   if (wE) return <p className="text-red-600">Wallet error: {wErr.message}</p>;
   if (tE)
     return <p className="text-red-600">Transactions error: {tErr.message}</p>;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      {/* User */}
-      <section className="rounded-lg border p-4">
-        <h2 className="text-lg font-semibold">Welcome</h2>
-        <p className="text-gray-600">
-          {user!.first_name} {user!.last_name} — {user!.email}
-        </p>
-      </section>
+    <div className="mx-auto max-w-6xl space-y-6 mt-[100px] font-degular pt-16 pb-18">
+      <div className="grid grid-cols-3 gap-30">
+        {/* Balance */}
+        <section className="col-span-2">
+          <div>
+            <div className="space-y-2">
+              <p className="text-sm/4 font-medium text-[#56616B]">
+                Available Balance
+              </p>
+              <p className="font-bold text-4xl">USD {wallet!.balance}</p>
+            </div>
+          </div>
+        </section>
 
-      {/* Wallet */}
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card label="Available Balance" value={N.format(wallet!.balance)} />
-        <Card label="Total Revenue" value={N.format(wallet!.total_revenue)} />
-        <Card label="Total Payout" value={N.format(wallet!.total_payout)} />
-        <Card label="Pending Payout" value={N.format(wallet!.pending_payout)} />
-        <Card label="Ledger Balance" value={N.format(wallet!.ledger_balance)} />
-      </section>
+        {/* Wallet */}
+        <Wallet wallet={wallet!} />
+      </div>
 
-      {/* Transactions */}
-      <section className="rounded-lg border overflow-hidden">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <Th>Date</Th>
-              <Th>Type</Th>
-              <Th>Status</Th>
-              <Th className="text-right">Amount</Th>
-              <Th>Customer / Product</Th>
-              <Th>Reference</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {txs!.map((t, i) => (
-              <tr
-                key={t.payment_reference ?? `${t.type}-${t.date}-${i}`}
-                className="border-t"
-              >
-                <Td>{D.format(new Date(t.date))}</Td>
-                <Td className="capitalize">{t.type}</Td>
-                <Td>
-                  <span
-                    className={`rounded px-2 py-0.5 text-xs ${
-                      t.status === "successful"
-                        ? "bg-green-100 text-green-700"
-                        : t.status === "pending"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-red-100 text-red-700"
+      <section className="mt-20">
+        <div className="border-b border-[#EFF1F6] pb-6 flex items-center justify-between gap-6">
+          <div>
+            <p className="text-2xl/8 font-bold text-[#131316]">
+              {txs!.length} Transactions
+            </p>
+            <p className="text-sm/4 text-[#56616B] font-medium">
+              Your transactions for the last 7 days
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out">
+              <p className="text-[#131316] font-semibold leading-6">Filter</p>
+              <MdKeyboardArrowDown size={16} />
+            </button>
+            <button className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out">
+              <p className="text-[#131316] font-semibold leading-6">
+                Export list
+              </p>
+              <RxDownload size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-8 space-y-6">
+          {txs!.map((t, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="flex items-center gap-3.5">
+                <div
+                  className={`${
+                    t.type === "deposit"
+                      ? "bg-[#E3FCF2] text-[#075132]"
+                      : "bg-[#F9E3E0] text-[#961100]"
+                  } rounded-full p-3.5`}
+                >
+                  {t.type === "deposit" ? (
+                    <MdOutlineCallReceived size={20} />
+                  ) : (
+                    <MdOutlineCallMade size={20} />
+                  )}
+                </div>
+
+                <div className="space-y-2 font-medium">
+                  <p className="leading-6 text-[#131316]">
+                    {t.metadata?.name || "Cash Withdrawal"}
+                  </p>
+                  <p
+                    className={`text-sm/4 text-[#56616B] capitalize ${
+                      t.type === "withdrawal"
+                        ? t.status === "successful"
+                          ? "text-green-600"
+                          : "text-[#A77A07]"
+                        : ""
                     }`}
                   >
-                    {t.status}
-                  </span>
-                </Td>
-                <Td className="text-right">{N.format(t.amount)}</Td>
-                <Td>
-                  {t.metadata?.name ?? "—"}
-                  {t.metadata?.product_name
-                    ? ` • ${t.metadata.product_name}`
-                    : ""}
-                </Td>
-                <Td className="font-mono text-xs">
-                  {t.payment_reference ?? "—"}
-                </Td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    {t.metadata?.product_name || t.status}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end space-y-1">
+                <p className="font-bold leading-[150%] text-[#131316]">
+                  USD {t.amount}
+                </p>
+                <p className="text-sm/4 text-[#56616B] font-medium">
+                  {D.format(new Date(t.date))}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
-}
-
-function Card({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 text-xl font-semibold">{value}</p>
-    </div>
-  );
-}
-
-function Th({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
-  return (
-    <th
-      className={`px-4 py-2 text-left font-medium text-gray-600 ${className}`}
-    >
-      {children}
-    </th>
-  );
-}
-function Td({
-  children,
-  className = "",
-}: React.PropsWithChildren<{ className?: string }>) {
-  return <td className={`px-4 py-2 ${className}`}>{children}</td>;
 }
