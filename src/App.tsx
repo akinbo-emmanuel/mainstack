@@ -3,13 +3,18 @@ import Header from "./components/layout/Header";
 import Toolbar from "./components/layout/Toolbar";
 import Dashboard from "./components/Dashboard";
 
+import { Analytics } from "@vercel/analytics/next";
+
 function App() {
   return (
-    <main>
-      <Header />
-      <Toolbar />
-      <Dashboard />
-    </main>
+    <>
+      <main>
+        <Header />
+        <Toolbar />
+        <Dashboard />
+      </main>
+      <Analytics />
+    </>
   );
 }
 
