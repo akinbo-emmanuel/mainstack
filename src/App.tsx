@@ -2,8 +2,7 @@ import "./App.css";
 import Header from "./components/layout/Header";
 import Toolbar from "./components/layout/Toolbar";
 import Dashboard from "./components/Dashboard";
-
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
