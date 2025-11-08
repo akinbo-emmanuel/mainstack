@@ -6,7 +6,6 @@ import {
 import { useWallet, useTransactions } from "../features/queries";
 import Wallet from "./revenueDashboard/sections/Wallet";
 import { RxDownload } from "react-icons/rx";
-import PageLoader from "./PageLoader";
 
 const D = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
@@ -23,11 +22,6 @@ export default function Dashboard() {
     isError: tE,
   } = useTransactions();
 
-  // Show page loader on initial load when both are loading
-  if (wL && tL) {
-    return <PageLoader />;
-  }
-
   return (
     <div className="mx-auto max-w-6xl space-y-6 mt-[100px] font-degular pt-16 pb-18">
       <div className="grid grid-cols-3 gap-30">
@@ -41,7 +35,9 @@ export default function Dashboard() {
               {wE ? (
                 <p className="text-sm text-red-600">Error loading balance</p>
               ) : (
-                <p className="font-bold text-4xl">
+                <p className={`font-bold text-4xl transition-all duration-500 ${
+                  wL ? "opacity-50" : "opacity-100 animate-fade-in"
+                }`}>
                   USD {wL ? "--" : wallet!.balance}
                 </p>
               )}
@@ -64,7 +60,9 @@ export default function Dashboard() {
               <p className="text-sm text-red-600">Error loading transactions</p>
             ) : (
               <>
-                <p className="text-2xl/8 font-bold text-[#131316]">
+                <p className={`text-2xl/8 font-bold text-[#131316] transition-all duration-500 ${
+                  tL ? "opacity-50" : "opacity-100 animate-fade-in"
+                }`}>
                   {tL ? "--" : txs!.length} Transactions
                 </p>
                 <p className="text-sm/4 text-[#56616B] font-medium">
@@ -114,7 +112,11 @@ export default function Dashboard() {
             ))
           ) : (
             txs!.map((t, i) => (
-            <div key={i} className="flex items-center justify-between">
+            <div 
+              key={i} 
+              className="flex items-center justify-between animate-fade-in"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
               <div className="flex items-center gap-3.5">
                 <div
                   className={`${

@@ -26,7 +26,9 @@ function Card({ label, value, isLoading }: { label: string; value: number | unde
         <BiInfoCircle size={20} className="text-[#888F95]" />
       </div>
 
-      <p className="font-bold text-3xl">
+      <p className={`font-bold text-3xl transition-all duration-500 ${
+        isLoading ? "opacity-50" : "opacity-100 animate-fade-in"
+      }`}>
         USD {isLoading ? "--" : value}
       </p>
     </div>
