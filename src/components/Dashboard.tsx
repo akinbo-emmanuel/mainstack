@@ -6,6 +6,7 @@ import {
 import { useWallet, useTransactions } from "../features/queries";
 import Wallet from "./revenueDashboard/sections/Wallet";
 import { RxDownload } from "react-icons/rx";
+import PageLoader from "./PageLoader";
 
 const D = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
@@ -15,18 +16,17 @@ const D = new Intl.DateTimeFormat("en-GB", {
 
 export default function Dashboard() {
   // const { data: user, isLoading: uL, isError: uE, error: uErr } = useUser();
-  const { data: wallet, isLoading: wL, isError: wE, error: wErr } = useWallet();
+  const { data: wallet, isLoading: wL, isError: wE } = useWallet();
   const {
     data: txs,
     isLoading: tL,
     isError: tE,
-    error: tErr,
   } = useTransactions();
 
-  if (wL || tL) return <p>Loading…</p>;
-  if (wE) return <p className="text-red-600">Wallet error: {wErr.message}</p>;
-  if (tE)
-    return <p className="text-red-600">Transactions error: {tErr.message}</p>;
+  // Show page loader on initial load when both are loading
+  if (wL && tL) {
+    return <PageLoader />;
+  }
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 mt-[100px] font-degular pt-16 pb-18">
@@ -38,29 +38,47 @@ export default function Dashboard() {
               <p className="text-sm/4 font-medium text-[#56616B]">
                 Available Balance
               </p>
-              <p className="font-bold text-4xl">USD {wallet!.balance}</p>
+              {wE ? (
+                <p className="text-sm text-red-600">Error loading balance</p>
+              ) : (
+                <p className="font-bold text-4xl">
+                  USD {wL ? "--" : wallet!.balance}
+                </p>
+              )}
             </div>
           </div>
         </section>
 
         {/* Wallet */}
-        <Wallet wallet={wallet!} />
+        {wE ? (
+          <div className="text-sm text-red-600">Error loading wallet data</div>
+        ) : (
+          <Wallet wallet={wL ? null : wallet!} isLoading={wL} />
+        )}
       </div>
 
       <section className="mt-20">
         <div className="border-b border-[#EFF1F6] pb-6 flex items-center justify-between gap-6">
           <div>
-            <p className="text-2xl/8 font-bold text-[#131316]">
-              {txs!.length} Transactions
-            </p>
-            <p className="text-sm/4 text-[#56616B] font-medium">
-              Your transactions for the last 7 days
-            </p>
+            {tE ? (
+              <p className="text-sm text-red-600">Error loading transactions</p>
+            ) : (
+              <>
+                <p className="text-2xl/8 font-bold text-[#131316]">
+                  {tL ? "--" : txs!.length} Transactions
+                </p>
+                <p className="text-sm/4 text-[#56616B] font-medium">
+                  Your transactions for the last 7 days
+                </p>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
             <button className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out">
-              <p className="text-[#131316] font-semibold leading-6">Filter</p>
+              <p className="text-[#131316] font-semibold leading-6">
+                Filter
+              </p>
               <MdKeyboardArrowDown size={16} />
             </button>
             <button className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out">
@@ -73,7 +91,29 @@ export default function Dashboard() {
         </div>
 
         <div className="mt-8 space-y-6">
-          {txs!.map((t, i) => (
+          {tE ? (
+            <p className="text-sm text-red-600">
+              Failed to load transactions. Please try again.
+            </p>
+          ) : tL ? (
+            // Loading skeleton
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between animate-pulse">
+                <div className="flex items-center gap-3.5">
+                  <div className="bg-gray-200 rounded-full w-12 h-12"></div>
+                  <div className="space-y-2">
+                    <div className="bg-gray-200 h-4 w-32 rounded"></div>
+                    <div className="bg-gray-200 h-3 w-24 rounded"></div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="bg-gray-200 h-4 w-20 rounded"></div>
+                  <div className="bg-gray-200 h-3 w-16 rounded"></div>
+                </div>
+              </div>
+            ))
+          ) : (
+            txs!.map((t, i) => (
             <div key={i} className="flex items-center justify-between">
               <div className="flex items-center gap-3.5">
                 <div
@@ -117,7 +157,8 @@ export default function Dashboard() {
                 </p>
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </div>
