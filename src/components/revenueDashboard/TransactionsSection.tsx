@@ -5,6 +5,7 @@ import {
 } from "react-icons/md";
 import { RxDownload } from "react-icons/rx";
 import type { Transaction } from "../../types/api";
+import EmptyState from "./EmptyState";
 
 const D = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
@@ -17,6 +18,8 @@ interface TransactionsSectionProps {
   isLoading: boolean;
   isError: boolean;
   onFilterClick: () => void;
+  onClearFilters: () => void;
+  activeFilterCount: number;
 }
 
 export default function TransactionsSection({
@@ -24,6 +27,8 @@ export default function TransactionsSection({
   isLoading,
   isError,
   onFilterClick,
+  onClearFilters,
+  activeFilterCount,
 }: TransactionsSectionProps) {
   return (
     <section className="mt-20">
@@ -50,9 +55,14 @@ export default function TransactionsSection({
         <div className="flex items-center gap-3">
           <button
             onClick={onFilterClick}
-            className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#E5E7EB]"
+            className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#E5E7EB]"
           >
             <p className="text-[#131316] font-semibold leading-6">Filter</p>
+            {activeFilterCount > 0 && (
+              <span className="size-5 rounded-full bg-[#131316] text-white text-xs font-medium flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
             <MdKeyboardArrowDown size={16} />
           </button>
           <button className="rounded-full pl-7 pr-5 py-3 bg-[#EFF1F6] flex items-center gap-1 cursor-pointer transition-all duration-300 ease-in-out">
@@ -70,7 +80,6 @@ export default function TransactionsSection({
             Failed to load transactions. Please try again.
           </p>
         ) : isLoading ? (
-          // Loading skeleton
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
@@ -89,6 +98,8 @@ export default function TransactionsSection({
               </div>
             </div>
           ))
+        ) : transactions.length === 0 ? (
+          <EmptyState onClearFilters={onClearFilters} />
         ) : (
           transactions.map((t, i) => (
             <div

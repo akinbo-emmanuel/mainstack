@@ -76,7 +76,6 @@ export default function DateRangeFilter({
                     ...tempDateRange,
                     from: dateString,
                   });
-                  // When custom date is selected, set period to custom
                   if (dateString) {
                     onPeriodChange("custom");
                   }
@@ -137,7 +136,6 @@ export default function DateRangeFilter({
                     ...tempDateRange,
                     to: dateString,
                   });
-                  // When custom date is selected, set period to custom
                   if (dateString) {
                     onPeriodChange("custom");
                   }

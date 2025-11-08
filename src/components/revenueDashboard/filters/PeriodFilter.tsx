@@ -29,7 +29,6 @@ export default function PeriodFilter({
             key={p.value}
             onClick={() => {
               onPeriodChange(p.value);
-              // Scroll to start after reordering
               setTimeout(() => {
                 const scrollElement =
                   scrollContainerRef.current?.querySelector(

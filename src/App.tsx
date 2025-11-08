@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { useState, useEffect } from "react";
 import FilterModal from "./components/FilterModal";
 import { useFilters } from "./hooks/useFilters";
+import { DEFAULT_PERIOD, DEFAULT_TRANSACTION_TYPES, DEFAULT_STATUSES } from "./constants/filters";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,13 +24,19 @@ function App() {
   } = useFilters();
 
   useEffect(() => {
-    // Simulate initial page load
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500); // Show loader for 1.5 seconds
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleClearFilters = () => {
+    setSelectedPeriod(DEFAULT_PERIOD);
+    setDateRange({ from: "", to: "" });
+    setTransactionTypes(DEFAULT_TRANSACTION_TYPES);
+    setStatuses(DEFAULT_STATUSES);
+  };
 
   if (isLoading) {
     return <PageLoader />;
@@ -46,6 +53,7 @@ function App() {
           dateRange={dateRange}
           transactionTypes={transactionTypes}
           statuses={statuses}
+          onClearFilters={handleClearFilters}
         />
       </main>
 

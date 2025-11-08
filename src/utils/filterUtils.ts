@@ -135,3 +135,38 @@ export const hasFilterChanges = (
 
   return false;
 };
+
+export const countActiveFilters = (
+  period: string,
+  dateRange: DateRange,
+  transactionTypes: TransactionTypeFilters,
+  statuses: StatusFilters,
+  defaults: {
+    period: string;
+    transactionTypes: TransactionTypeFilters;
+    statuses: StatusFilters;
+  }
+): number => {
+  let count = 0;
+
+  if (period !== defaults.period) count++;
+  if (dateRange.from || dateRange.to) count++;
+
+  const allTypesSelected = Object.values(transactionTypes).every((v) => v);
+  const defaultAllTypesSelected = Object.values(defaults.transactionTypes).every((v) => v);
+  if (allTypesSelected !== defaultAllTypesSelected || !allTypesSelected) {
+    const selectedCount = Object.values(transactionTypes).filter((v) => v).length;
+    const defaultSelectedCount = Object.values(defaults.transactionTypes).filter((v) => v).length;
+    if (selectedCount !== defaultSelectedCount) count++;
+  }
+
+  const allStatusesSelected = Object.values(statuses).every((v) => v);
+  const defaultAllStatusesSelected = Object.values(defaults.statuses).every((v) => v);
+  if (allStatusesSelected !== defaultAllStatusesSelected || !allStatusesSelected) {
+    const selectedCount = Object.values(statuses).filter((v) => v).length;
+    const defaultSelectedCount = Object.values(defaults.statuses).filter((v) => v).length;
+    if (selectedCount !== defaultSelectedCount) count++;
+  }
+
+  return count;
+};

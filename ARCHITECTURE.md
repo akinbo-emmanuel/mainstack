@@ -43,6 +43,7 @@ src/
 - All components use TypeScript interfaces
 - Shared types prevent duplication
 - Type-only imports for better tree-shaking
+- No `any` types in production code
 
 ### 3. **Custom Hooks**
 - `useFilters`: Manages all filter state in one place
@@ -55,6 +56,7 @@ src/
 - `filterByStatus`: Status-based filtering
 - `filterByTransactionType`: Type-based filtering
 - `hasFilterChanges`: Detects filter modifications
+- `countActiveFilters`: Counts non-default filters
 
 ### 5. **Constants**
 - `DEFAULT_TRANSACTION_TYPES`: Default transaction type selections
@@ -64,6 +66,12 @@ src/
 - `TRANSACTION_TYPE_OPTIONS`: Transaction type configuration
 - `STATUS_OPTIONS`: Status configuration
 
+### 6. **Data Visualization**
+- SVG-based charting for performance
+- Smooth bezier curves for visual appeal
+- Memoized calculations for efficiency
+- Responsive viewBox scaling
+
 ## Component Hierarchy
 
 ```
@@ -71,8 +79,10 @@ App
 ├── Header
 ├── Toolbar
 ├── Dashboard
+│   ├── TransactionChart
 │   ├── Wallet
 │   └── TransactionsSection
+│       └── EmptyState (conditional)
 └── FilterModal
     ├── PeriodFilter
     ├── DateRangeFilter

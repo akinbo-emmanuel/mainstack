@@ -33,28 +33,21 @@ export default function FilterModal({
   statuses: externalStatuses,
   onStatusesChange,
 }: FilterModalProps) {
-
-  // Filter state - Local state for temporary selection (before Apply is clicked)
   const [tempSelectedPeriod, setTempSelectedPeriod] = useState<string>(
     externalSelectedPeriod
   );
   const [tempDateRange, setTempDateRange] = useState(externalDateRange);
   const [transactionTypes, setTransactionTypes] = useState(externalTransactionTypes);
   const [statuses, setStatuses] = useState(externalStatuses);
-  
-  // Track initial state when modal opens
   const [initialTransactionTypes, setInitialTransactionTypes] = useState(externalTransactionTypes);
   const [initialStatuses, setInitialStatuses] = useState(externalStatuses);
 
-  // Sync temp state with external state when modal opens
   useEffect(() => {
     if (isOpen) {
       setTempSelectedPeriod(externalSelectedPeriod);
       setTempDateRange(externalDateRange);
-      // Sync with external state (applied filters)
       setTransactionTypes(externalTransactionTypes);
       setStatuses(externalStatuses);
-      // Capture current external state as initial for comparison
       setInitialTransactionTypes(externalTransactionTypes);
       setInitialStatuses(externalStatuses);
     }
@@ -75,7 +68,6 @@ export default function FilterModal({
     }
   );
 
-  // Handler functions
   const handleTransactionTypeChange = (type: keyof typeof transactionTypes) => {
     setTransactionTypes((prev) => ({
       ...prev,
@@ -102,7 +94,6 @@ export default function FilterModal({
     onClose();
   };
 
-  // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
