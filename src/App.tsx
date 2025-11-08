@@ -5,9 +5,22 @@ import Dashboard from "./components/Dashboard";
 import PageLoader from "./components/PageLoader";
 import { Analytics } from "@vercel/analytics/react";
 import { useState, useEffect } from "react";
+import FilterModal from "./components/FilterModal";
+import { useFilters } from "./hooks/useFilters";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const {
+    selectedPeriod,
+    setSelectedPeriod,
+    dateRange,
+    setDateRange,
+    transactionTypes,
+    setTransactionTypes,
+    statuses,
+    setStatuses,
+  } = useFilters();
 
   useEffect(() => {
     // Simulate initial page load
@@ -27,9 +40,28 @@ function App() {
       <main>
         <Header />
         <Toolbar />
-        <Dashboard />
+        <Dashboard 
+          setIsFilterOpen={setIsFilterOpen} 
+          selectedPeriod={selectedPeriod}
+          dateRange={dateRange}
+          transactionTypes={transactionTypes}
+          statuses={statuses}
+        />
       </main>
+
       <Analytics />
+      <FilterModal
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={setSelectedPeriod}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        transactionTypes={transactionTypes}
+        onTransactionTypesChange={setTransactionTypes}
+        statuses={statuses}
+        onStatusesChange={setStatuses}
+      />
     </>
   );
 }

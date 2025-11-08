@@ -12,7 +12,7 @@ export interface User {
   email: string;
 }
 
-export type TransactionType = "deposit" | "withdrawal";
+export type TransactionType = string;
 export type TransactionStatus = "successful" | "failed" | "pending";
 
 export interface Transaction {

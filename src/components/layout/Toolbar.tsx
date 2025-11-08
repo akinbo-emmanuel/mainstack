@@ -5,7 +5,7 @@ import Product4 from "../icons/product4.webp";
 
 const Toolbar = () => {
   return (
-    <section className="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:block p-1 bg-white shadow-[0px_6px_12px_0px_#5C738314,0px_4px_8px_0px_#5C738314] rounded-full">
+    <section className="fixed left-4 top-1/2 -translate-y-1/2 z-10 hidden lg:block p-1 bg-white shadow-[0px_6px_12px_0px_#5C738314,0px_4px_8px_0px_#5C738314] rounded-full">
       <div className="space-y-2">
         <div className="p-2">
           <img

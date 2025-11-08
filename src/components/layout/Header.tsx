@@ -12,7 +12,7 @@ import {
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 p-4 w-full">
+    <header className="fixed top-0 left-0 p-4 w-full z-10">
       <div className="w-full max-w-7xl mx-auto shadow-[0px_2px_4px_0px_#2D3B430D,0px_2px_6px_0px_#2D3B430F] border-2 border-white rounded-full p-3 pl-6 flex items-center justify-between bg-white">
         <img src={Logo} alt="Logo" className="size-9" />
 
